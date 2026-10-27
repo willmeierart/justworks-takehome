@@ -22,37 +22,36 @@ const updatedLabel = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="pt-2">
     <div
       v-if="isError"
-      class="bg-danger-bg text-danger rounded-card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"
+      class="bg-danger-bg text-danger rounded-card flex flex-col gap-3 p-4"
       role="alert"
     >
-      <p>Rates could not be loaded. Your split is unchanged; try again to refresh the quote.</p>
+      <p>Prices could not be loaded. Your split is unchanged.</p>
       <button
         type="button"
-        class="bg-card text-ink focus-visible:outline-ink rounded-pill shrink-0 px-4 py-2 text-sm font-semibold ring-1 ring-danger/20 focus-visible:outline-2 focus-visible:outline-offset-2"
+        class="bg-accent text-accent-ink focus-visible:outline-forest rounded-pill px-4 py-3 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
         @click="emit('retry')"
       >
-        Retry
+        Try again
       </button>
     </div>
 
-    <div v-else class="flex flex-wrap items-center justify-between gap-3 text-sm">
-      <p class="text-ink-muted">
-        <span v-if="isFetching">Updating live Coinbase prices...</span>
-        <span v-else-if="updatedLabel">Live prices as of {{ updatedLabel }}</span>
-        <span v-else>Fetching live Coinbase prices...</span>
-      </p>
+    <template v-else>
       <button
         type="button"
-        class="bg-accent text-accent-ink focus-visible:outline-forest rounded-pill px-3 py-1.5 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60"
+        class="bg-accent text-accent-ink focus-visible:outline-forest rounded-pill w-full py-3.5 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60"
         :disabled="isFetching"
         :aria-disabled="isFetching"
         @click="emit('retry')"
       >
-        Refresh
+        {{ isFetching ? 'Updating prices' : 'Refresh prices' }}
       </button>
-    </div>
+      <p class="text-ink-muted mt-3 text-center text-sm">
+        <span v-if="updatedLabel">Coinbase · {{ updatedLabel }}</span>
+        <span v-else>Coinbase live prices</span>
+      </p>
+    </template>
   </div>
 </template>

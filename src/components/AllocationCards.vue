@@ -14,52 +14,42 @@ const props = defineProps<{
 
 <template>
   <section aria-live="polite" aria-atomic="true" :aria-busy="isFetching">
-    <h2 class="text-ink-muted text-sm font-semibold">You'll get</h2>
+    <h2 class="text-ink-muted text-sm font-medium">You'll get</h2>
 
-    <p v-if="!hasAmount" class="text-ink-muted mt-3 text-base">
-      Enter an amount to see how much Bitcoin and Ether to buy.
-    </p>
-
-    <div class="mt-3 grid gap-3 sm:grid-cols-2">
-      <article class="bg-canvas/60 rounded-card ring-line p-5 ring-1">
-        <div class="flex items-center justify-between gap-3">
-          <p class="text-ink text-sm font-semibold">Bitcoin</p>
-          <p class="text-ink-muted text-xs font-medium tabular-nums">
-            {{ formatUnitPrice(props.rates?.BTC, currency) ?? 'Price loading' }}
-            / BTC
+    <div class="mt-5 flex flex-col gap-6">
+      <div>
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-ink text-2xl font-semibold tracking-tight tabular-nums">
+            {{
+              hasAmount && props.rates && allocation.btcCrypto != null
+                ? formatCrypto(allocation.btcCrypto, 'BTC')
+                : '0.00 BTC'
+            }}
           </p>
+          <p class="text-ink-muted text-sm font-medium">Bitcoin</p>
         </div>
-        <p class="text-ink mt-3 text-2xl font-semibold tracking-tight tabular-nums">
-          {{
-            hasAmount && props.rates && allocation.btcCrypto != null
-              ? formatCrypto(allocation.btcCrypto, 'BTC')
-              : '--'
-          }}
-        </p>
         <p class="text-ink-muted mt-1 text-sm tabular-nums">
-          {{ hasAmount ? formatFiat(allocation.btcFiat, currency) : formatFiat(0, currency) }}
+          {{ formatUnitPrice(props.rates?.BTC, currency) ?? 'Price loading' }}
+          <span v-if="hasAmount"> · {{ formatFiat(allocation.btcFiat, currency) }}</span>
         </p>
-      </article>
+      </div>
 
-      <article class="bg-canvas/60 rounded-card ring-line p-5 ring-1">
-        <div class="flex items-center justify-between gap-3">
-          <p class="text-ink text-sm font-semibold">Ether</p>
-          <p class="text-ink-muted text-xs font-medium tabular-nums">
-            {{ formatUnitPrice(props.rates?.ETH, currency) ?? 'Price loading' }}
-            / ETH
+      <div>
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-ink text-2xl font-semibold tracking-tight tabular-nums">
+            {{
+              hasAmount && props.rates && allocation.ethCrypto != null
+                ? formatCrypto(allocation.ethCrypto, 'ETH')
+                : '0.00 ETH'
+            }}
           </p>
+          <p class="text-ink-muted text-sm font-medium">Ether</p>
         </div>
-        <p class="text-ink mt-3 text-2xl font-semibold tracking-tight tabular-nums">
-          {{
-            hasAmount && props.rates && allocation.ethCrypto != null
-              ? formatCrypto(allocation.ethCrypto, 'ETH')
-              : '--'
-          }}
-        </p>
         <p class="text-ink-muted mt-1 text-sm tabular-nums">
-          {{ hasAmount ? formatFiat(allocation.ethFiat, currency) : formatFiat(0, currency) }}
+          {{ formatUnitPrice(props.rates?.ETH, currency) ?? 'Price loading' }}
+          <span v-if="hasAmount"> · {{ formatFiat(allocation.ethFiat, currency) }}</span>
         </p>
-      </article>
+      </div>
     </div>
   </section>
 </template>

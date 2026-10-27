@@ -27,7 +27,7 @@ function onEthInput(event: Event) {
 
 <template>
   <div>
-    <p class="text-ink-muted text-sm font-semibold">Split</p>
+    <p class="text-ink-muted text-sm font-medium">Split</p>
     <p class="text-ink mt-1 text-lg font-semibold">
       {{ Math.round(btcPercent) }}% Bitcoin / {{ Math.round(100 - btcPercent) }}% Ether
     </p>

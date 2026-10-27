@@ -22,7 +22,7 @@ describe('parseHoldings', () => {
     expect(parseHoldings('{"amount":-12,"currency":"JPY","btcPercent":140}')).toEqual({
       amount: null,
       currency: 'USD',
-      btcPercent: 70,
+      btcPercent: 50,
     })
   })
 

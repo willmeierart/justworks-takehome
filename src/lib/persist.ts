@@ -1,7 +1,7 @@
 import { FIAT_CURRENCIES, type FiatCurrency, type Holdings } from './types'
 
-export const HOLDINGS_STORAGE_KEY = 'holdings-split'
-export const DEFAULT_BTC_PERCENT = 70
+export const HOLDINGS_STORAGE_KEY = 'holdings-split-v2'
+export const DEFAULT_BTC_PERCENT = 50
 
 export const defaultHoldings: Holdings = {
   amount: null,

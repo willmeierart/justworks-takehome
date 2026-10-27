@@ -1,6 +1,6 @@
 # Holdings split
 
-A one-screen calculator: enter a USD, EUR, or GBP amount, keep or change a 70/30 BTC/ETH split, and see how much of each to buy from live Coinbase rates. Refreshing the page restores what you entered.
+A one-screen calculator: enter a USD, EUR, or GBP amount, split it between BTC and ETH, and see how much of each to buy from live Coinbase rates. Refreshing the page restores what you entered.
 
 ## Run
 
@@ -32,7 +32,7 @@ The Coinbase URL does not take an amount. The rate is crypto per 1 unit of fiat.
 
 ### localStorage, not the URL
 
-Amount, currency, and split are written to `localStorage`. That restores the form on refresh without putting a holdings figure in history, referrers, or a shareable link. Corrupt JSON falls back to 70% BTC in USD with an empty amount.
+Amount, currency, and split are written to `localStorage`. That restores the form on refresh without putting a holdings figure in history, referrers, or a shareable link. Corrupt JSON falls back to a 50/50 split in USD with an empty amount.
 
 ### Composables, not Pinia
 
