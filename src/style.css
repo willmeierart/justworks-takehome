@@ -2,7 +2,6 @@
 
 @theme {
   --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
 
   --color-canvas: #eef8d8;
   --color-ink: #12260a;
@@ -13,7 +12,6 @@
   --color-danger: #c2410c;
   --color-danger-bg: #fff1e8;
   --color-line: #d5e3c4;
-  --color-mint: #c8f39a;
   --color-forest: #163b12;
 
   --radius-card: 1.75rem;
@@ -39,19 +37,6 @@ body {
   min-height: 100svh;
 }
 
-input[type='range'] {
-  accent-color: var(--color-forest);
-}
-
-input[type='number'] {
-  appearance: textfield;
-}
-
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-  appearance: none;
-}
-
 .figure-frame {
   container-type: inline-size;
 }
@@ -63,68 +48,6 @@ input[type='number']::-webkit-outer-spin-button {
 
 .input-shell:focus-within {
   border-color: color-mix(in srgb, var(--color-forest) 55%, var(--color-line));
-}
-
-.split-layout {
-  display: grid;
-  grid-template-columns: auto;
-  justify-items: start;
-  row-gap: 0.25rem;
-  margin-top: 1.25rem;
-}
-
-.split-eth-label {
-  margin-top: 1rem;
-}
-
-.split-mixer {
-  display: none;
-}
-
-@container (min-width: 24rem) {
-  .split-layout {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-rows: auto auto;
-    column-gap: 0.75rem;
-    align-items: center;
-    justify-items: stretch;
-  }
-
-  .split-btc-label {
-    grid-area: 1 / 1;
-  }
-
-  .split-eth-label {
-    grid-area: 1 / 3;
-    justify-self: end;
-    margin-top: 0;
-  }
-
-  .split-btc-field {
-    grid-area: 2 / 1;
-  }
-
-  .split-mixer {
-    grid-area: 2 / 2;
-    justify-self: stretch;
-    position: relative;
-    display: block;
-    height: 2rem;
-    min-width: 0;
-    align-self: center;
-    padding-inline: 0.7rem;
-    cursor: grab;
-    touch-action: none;
-  }
-
-  .split-eth-field {
-    grid-area: 2 / 3;
-    justify-self: end;
-  }
-
-  .split-mixer:active {
-    cursor: grabbing;
-  }
 }
 
 .figure-amount {
@@ -143,9 +66,8 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .figure-price {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   line-height: 1.35;
-  color: color-mix(in srgb, var(--color-ink-muted) 70%, transparent);
 }
 
 .figure-split {

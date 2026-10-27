@@ -1,109 +1,109 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { nextTick, onMounted, onScopeDispose, ref, useId, watch } from 'vue'
 
 import CurrencyPicker from '@/components/CurrencyPicker.vue'
-import { caretAfterKeptChars, formatAmountInput, parseAmountInput } from '@/domain/format'
+import {
+  caretAfterKeptChars,
+  formatAmountFromNumber,
+  formatAmountInput,
+  parseAmountInput,
+  separatorsFor,
+} from '@/domain/format'
 import type { FiatCurrency } from '@/domain/types'
+import { rejectNonNumericInsert, spinFromKey, writeFormattedValue } from '@/lib/numericInput'
 
 const amount = defineModel<number | null>({ required: true })
 const currency = defineModel<FiatCurrency>('currency', { required: true })
 
-const inputId = 'holdings-amount'
-const errorId = 'holdings-amount-error'
-const display = ref(amount.value == null ? '' : formatAmountInput(String(amount.value)))
+const inputId = useId()
+const display = ref(
+  amount.value == null ? '' : formatAmountFromNumber(amount.value, currency.value),
+)
 const rowEl = ref<HTMLElement | null>(null)
 const symbolEl = ref<HTMLElement | null>(null)
 const measureEl = ref<HTMLElement | null>(null)
 
 let observer: ResizeObserver | null = null
-let fitting = false
 
 watch(amount, (value) => {
-  const parsed = parseAmountInput(display.value)
+  const parsed = parseAmountInput(display.value, currency.value)
   if (value !== parsed) {
-    display.value = value == null ? '' : formatAmountInput(String(value))
+    display.value = value == null ? '' : formatAmountFromNumber(value, currency.value)
   }
 })
 
-const isInvalid = computed(() => {
-  if (display.value.trim() === '') {
-    return false
-  }
-  return parseAmountInput(display.value) == null
+watch(currency, () => {
+  display.value = amount.value == null ? '' : formatAmountFromNumber(amount.value, currency.value)
 })
 
 function fitAmount() {
   const row = rowEl.value
   const symbol = symbolEl.value
   const measure = measureEl.value
-  if (!row || !symbol || !measure || fitting || row.clientWidth === 0) {
+  if (!row || !symbol || !measure || row.clientWidth === 0) {
     return
   }
 
-  fitting = true
   row.style.fontSize = ''
-  let size = parseFloat(getComputedStyle(row).fontSize)
+  const base = parseFloat(getComputedStyle(row).fontSize)
   const min = 18
   const gap = 8
-  while (size > min && measure.offsetWidth + symbol.offsetWidth + gap > row.clientWidth) {
-    size -= 1
-    row.style.fontSize = `${size}px`
+  const needed = measure.offsetWidth + symbol.offsetWidth + gap
+  if (needed <= row.clientWidth) {
+    return
   }
-  fitting = false
+  const next = Math.max(min, Math.floor(base * (row.clientWidth / needed)))
+  row.style.fontSize = `${next}px`
 }
 
 function scheduleFit() {
   void nextTick(fitAmount)
 }
 
-function placeCaret(input: HTMLInputElement, caret: number) {
-  const pos = Math.min(Math.max(0, caret), input.value.length)
-  input.setSelectionRange(pos, pos)
+function decimal(): string {
+  return separatorsFor(currency.value).decimal
 }
 
 function onBeforeInput(event: InputEvent) {
-  if (event.inputType !== 'insertText' || !event.data) {
-    return
-  }
-  const input = event.target as HTMLInputElement
-  if (!/^[\d.]$/.test(event.data) || (event.data === '.' && input.value.includes('.'))) {
-    event.preventDefault()
-  }
+  rejectNonNumericInsert(event, decimal())
 }
 
 function onKeydown(event: KeyboardEvent) {
-  if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
+  const next = spinFromKey(event, amount.value ?? 0, {
+    min: 0,
+    max: Number.MAX_SAFE_INTEGER,
+    step: 1,
+    shiftStep: 10,
+    decimals: 2,
+  })
+  if (next == null) {
     return
   }
-  event.preventDefault()
-  const step = event.shiftKey ? 10 : 1
-  const direction = event.key === 'ArrowUp' ? 1 : -1
-  const current = amount.value ?? 0
-  const next = Math.max(0, Math.round((current + direction * step) * 100) / 100)
   amount.value = next
-  display.value = formatAmountInput(String(next))
+  display.value = formatAmountFromNumber(next, currency.value)
   scheduleFit()
 }
 
 function onInput(event: Event) {
   const input = event.target as HTMLInputElement
   const raw = input.value
-  const next = formatAmountInput(raw)
-  const caret = caretAfterKeptChars(next, raw, input.selectionStart ?? raw.length)
+  const next = formatAmountInput(raw, currency.value)
   display.value = next
-  amount.value = parseAmountInput(next)
-  input.value = next
-  placeCaret(input, caret)
+  amount.value = parseAmountInput(next, currency.value)
+  writeFormattedValue(input, next, raw, (formatted, source, caret) =>
+    caretAfterKeptChars(formatted, source, caret, decimal()),
+  )
   void nextTick(() => {
     if (document.activeElement === input) {
-      placeCaret(input, caret)
+      writeFormattedValue(input, next, raw, (formatted, source, caret) =>
+        caretAfterKeptChars(formatted, source, caret, decimal()),
+      )
     }
   })
   scheduleFit()
 }
 
 watch(display, scheduleFit)
-watch(currency, scheduleFit)
 
 onMounted(() => {
   scheduleFit()
@@ -114,7 +114,7 @@ onMounted(() => {
   void document.fonts?.ready.then(() => fitAmount())
 })
 
-onUnmounted(() => {
+onScopeDispose(() => {
   observer?.disconnect()
 })
 </script>
@@ -143,8 +143,6 @@ onUnmounted(() => {
           aria-valuemin="0"
           :aria-valuenow="amount ?? 0"
           :aria-valuetext="display || 'empty'"
-          :aria-invalid="isInvalid"
-          :aria-describedby="isInvalid ? errorId : undefined"
           class="text-ink placeholder:text-ink/25 min-w-0 flex-1 border-0 bg-transparent p-0 text-[length:inherit] font-semibold tracking-tight outline-none"
           @beforeinput="onBeforeInput"
           @keydown="onKeydown"
@@ -158,8 +156,5 @@ onUnmounted(() => {
         >
       </div>
     </div>
-    <p v-if="isInvalid" :id="errorId" class="text-danger mt-2 text-sm">
-      Enter a number that is zero or greater.
-    </p>
   </div>
 </template>

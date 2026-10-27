@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onScopeDispose, ref, useId } from 'vue'
 
 import { FIAT_CURRENCIES, FIAT_UNITS, type FiatCurrency } from '@/domain/types'
 
@@ -7,8 +7,8 @@ const currency = defineModel<FiatCurrency>({ required: true })
 
 const open = ref(false)
 const root = ref<HTMLElement | null>(null)
-const listId = 'currency-options'
-const buttonId = 'currency-toggle'
+const listId = useId()
+const buttonId = useId()
 
 const symbol = computed(() => FIAT_UNITS[currency.value].symbol)
 
@@ -90,7 +90,7 @@ onMounted(() => {
   document.addEventListener('pointerdown', onDocumentPointer)
 })
 
-onUnmounted(() => {
+onScopeDispose(() => {
   document.removeEventListener('pointerdown', onDocumentPointer)
 })
 </script>
@@ -132,7 +132,7 @@ onUnmounted(() => {
       :aria-labelledby="buttonId"
       class="border-line bg-card absolute top-full left-0 z-30 mt-2 min-w-40 overflow-hidden rounded-2xl border py-1 shadow-lg"
     >
-      <li v-for="code in FIAT_CURRENCIES" :key="code" class="list-none">
+      <li v-for="code in FIAT_CURRENCIES" :key="code" role="presentation" class="list-none">
         <button
           type="button"
           role="option"

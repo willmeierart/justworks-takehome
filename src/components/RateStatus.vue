@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onScopeDispose, ref } from 'vue'
 
 import { formatLastRefreshed } from '@/domain/format'
 
@@ -33,7 +33,7 @@ onMounted(() => {
   }, 30_000)
 })
 
-onUnmounted(() => {
+onScopeDispose(() => {
   window.clearInterval(timer)
 })
 </script>

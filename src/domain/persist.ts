@@ -1,7 +1,29 @@
 import { FIAT_CURRENCIES, type FiatCurrency, type Holdings } from './types'
 
 export const HOLDINGS_STORAGE_KEY = 'holdings-split-v2'
-export const DEFAULT_BTC_PERCENT = 50
+export const DEFAULT_BTC_PERCENT = 70
+
+export function readStorage(key: string): string | null {
+  try {
+    if (typeof localStorage === 'undefined') {
+      return null
+    }
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+export function writeStorage(key: string, value: string): void {
+  try {
+    if (typeof localStorage === 'undefined') {
+      return
+    }
+    localStorage.setItem(key, value)
+  } catch {
+    // private mode, quota, or a blocked store must not take down the form
+  }
+}
 
 export const defaultHoldings: Holdings = {
   amount: null,

@@ -48,7 +48,7 @@
 
 ## Ticket 5 -- Accessibility and lint-clean templates
 
-- [x] Named/labeled controls; currency `fieldset`
+- [x] Named/labeled controls; currency listbox
 - [x] Results `aria-live` (polite)
 - [x] Keyboard path for amount, currency, slider, percents, retry
 - [x] Visible focus, contrast, no positive tabindex

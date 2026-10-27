@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, onUnmounted, toValue, watch, type MaybeRefOrGetter } from 'vue'
+import { computed, onScopeDispose, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue'
 
 import { fetchExchangeRates } from '@/api/coinbase'
 import { RATES_STALE_TIME_MS } from '@/api/queryClient'
@@ -14,21 +14,21 @@ export function exchangeRatesQueryKey(currency: FiatCurrency) {
 }
 
 export function useExchangeRates(
-  currency: MaybeRefOrGetter<FiatCurrency>,
+  currency: Ref<FiatCurrency>,
   amount: MaybeRefOrGetter<number | null>,
 ) {
   const queryClient = useQueryClient()
-  const currencyValue = computed(() => toValue(currency))
+  const lastGoodCurrency = ref(currency.value)
 
   const query = useQuery({
-    queryKey: computed(() => exchangeRatesQueryKey(currencyValue.value)),
-    queryFn: ({ signal }) => fetchExchangeRates(currencyValue.value, signal),
+    queryKey: computed(() => exchangeRatesQueryKey(currency.value)),
+    queryFn: ({ signal }) => fetchExchangeRates(currency.value, signal),
     staleTime: RATES_STALE_TIME_MS,
   })
 
   function refetchCurrent() {
     void queryClient.invalidateQueries({
-      queryKey: exchangeRatesQueryKey(currencyValue.value),
+      queryKey: exchangeRatesQueryKey(currency.value),
     })
   }
 
@@ -41,16 +41,33 @@ export function useExchangeRates(
     },
   )
 
-  onUnmounted(() => {
+  watch(
+    () => query.data.value,
+    (data) => {
+      if (data) {
+        lastGoodCurrency.value = data.currency
+      }
+    },
+    { immediate: true },
+  )
+
+  watch(
+    () => query.isError.value,
+    (failed) => {
+      if (failed && currency.value !== lastGoodCurrency.value) {
+        currency.value = lastGoodCurrency.value
+      }
+    },
+  )
+
+  onScopeDispose(() => {
     debouncedRefetch.cancel()
   })
 
   return {
     rates: computed(() => query.data.value ?? null),
-    isPending: computed(() => query.isPending.value),
     isFetching: computed(() => query.isFetching.value),
-    isError: computed(() => query.isError.value),
-    error: computed(() => query.error.value),
+    isError: computed(() => query.isError.value && currency.value === lastGoodCurrency.value),
     dataUpdatedAt: computed(() => query.dataUpdatedAt.value),
     refetch: query.refetch,
   }

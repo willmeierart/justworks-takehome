@@ -1,4 +1,16 @@
-import type { CryptoAsset, FiatCurrency } from './types'
+import { FIAT_UNITS, type CryptoAsset, type FiatCurrency } from './types'
+
+export function localeFor(currency: FiatCurrency): string {
+  return FIAT_UNITS[currency].locale
+}
+
+export function separatorsFor(currency: FiatCurrency): { group: string; decimal: string } {
+  const parts = new Intl.NumberFormat(localeFor(currency)).formatToParts(1234.5)
+  return {
+    group: parts.find((part) => part.type === 'group')?.value ?? ',',
+    decimal: parts.find((part) => part.type === 'decimal')?.value ?? '.',
+  }
+}
 
 const fiatFormatters = new Map<FiatCurrency, Intl.NumberFormat>()
 
@@ -8,7 +20,7 @@ function fiatFormatter(currency: FiatCurrency): Intl.NumberFormat {
     return existing
   }
 
-  const formatter = new Intl.NumberFormat(undefined, {
+  const formatter = new Intl.NumberFormat(localeFor(currency), {
     style: 'currency',
     currency,
     maximumFractionDigits: 2,
@@ -31,8 +43,28 @@ export function formatUnitPrice(
   return formatFiat(1 / rate, currency)
 }
 
-export function parseAmountInput(raw: string): number | null {
-  const stripped = raw.replace(/,/g, '').trim()
+function normalizeAmountRaw(raw: string, currency: FiatCurrency): string {
+  const { group, decimal } = separatorsFor(currency)
+  let seenDecimal = false
+  let out = ''
+  for (const char of raw) {
+    if (char >= '0' && char <= '9') {
+      out += char
+      continue
+    }
+    if (char === decimal && !seenDecimal) {
+      out += '.'
+      seenDecimal = true
+    }
+    if (char === group) {
+      continue
+    }
+  }
+  return out
+}
+
+export function parseAmountInput(raw: string, currency: FiatCurrency = 'USD'): number | null {
+  const stripped = normalizeAmountRaw(raw, currency)
   if (stripped === '' || stripped === '.') {
     return null
   }
@@ -43,26 +75,28 @@ export function parseAmountInput(raw: string): number | null {
   return parsed
 }
 
-export function formatAmountInput(raw: string): string {
-  const digits = raw.replace(/[^\d.]/g, '')
-  if (digits === '') {
+export function formatAmountInput(raw: string, currency: FiatCurrency = 'USD'): string {
+  const { group, decimal } = separatorsFor(currency)
+  const normalized = normalizeAmountRaw(raw, currency)
+  if (normalized === '') {
     return ''
   }
 
-  const dot = digits.indexOf('.')
+  const dot = normalized.indexOf('.')
   const hasDot = dot !== -1
-  const wholeRaw = hasDot ? digits.slice(0, dot) : digits
-  const fraction = hasDot
-    ? digits
-        .slice(dot + 1)
-        .replace(/\./g, '')
-        .slice(0, 2)
-    : ''
+  const wholeRaw = hasDot ? normalized.slice(0, dot) : normalized
+  const fraction = hasDot ? normalized.slice(dot + 1).slice(0, 2) : ''
   const wholeDigits = wholeRaw.replace(/^0+(?=\d)/, '')
   const whole = wholeDigits === '' ? '0' : wholeDigits
-  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, group)
 
-  return hasDot ? `${grouped}.${fraction}` : grouped
+  return hasDot ? `${grouped}${decimal}${fraction}` : grouped
+}
+
+export function formatAmountFromNumber(amount: number, currency: FiatCurrency): string {
+  const { decimal } = separatorsFor(currency)
+  const raw = String(amount).replace('.', decimal)
+  return formatAmountInput(raw, currency)
 }
 
 /** Digits only, clamped to 0-100. Empty while the field is being cleared. */
@@ -74,9 +108,18 @@ export function sanitizePercentDraft(raw: string): string {
   return String(Math.min(100, Number(digits)))
 }
 
-/** Place a caret from `source` onto `formatted`, counting digits and decimal points. */
-export function caretAfterKeptChars(formatted: string, source: string, caret: number): number {
-  const kept = source.slice(0, Math.max(0, caret)).replace(/[^\d.]/g, '')
+/** Place a caret from `source` onto `formatted`, counting digits and decimal marks. */
+export function caretAfterKeptChars(
+  formatted: string,
+  source: string,
+  caret: number,
+  decimal = '.',
+): number {
+  const kept = source
+    .slice(0, Math.max(0, caret))
+    .split('')
+    .filter((char) => char === decimal || (char >= '0' && char <= '9'))
+    .join('')
   if (kept.length === 0) {
     return 0
   }
@@ -84,7 +127,7 @@ export function caretAfterKeptChars(formatted: string, source: string, caret: nu
   let seen = 0
   for (let i = 0; i < formatted.length; i++) {
     const char = formatted[i] ?? ''
-    if (char === '.' || (char >= '0' && char <= '9')) {
+    if (char === decimal || (char >= '0' && char <= '9')) {
       seen++
     }
     if (seen === kept.length) {
@@ -94,27 +137,28 @@ export function caretAfterKeptChars(formatted: string, source: string, caret: nu
   return formatted.length
 }
 
-const cryptoFormatters = new Map<CryptoAsset, Intl.NumberFormat>()
+const cryptoFormatters = new Map<string, Intl.NumberFormat>()
 
-function cryptoFormatter(asset: CryptoAsset): Intl.NumberFormat {
-  const existing = cryptoFormatters.get(asset)
+function cryptoFormatter(asset: CryptoAsset, currency: FiatCurrency): Intl.NumberFormat {
+  const key = `${currency}:${asset}`
+  const existing = cryptoFormatters.get(key)
   if (existing) return existing
 
   const fractionDigits = asset === 'BTC' ? 8 : 6
-  const formatter = new Intl.NumberFormat(undefined, {
+  const formatter = new Intl.NumberFormat(localeFor(currency), {
     minimumFractionDigits: 2,
     maximumFractionDigits: fractionDigits,
   })
-  cryptoFormatters.set(asset, formatter)
+  cryptoFormatters.set(key, formatter)
   return formatter
 }
 
-export function formatCrypto(amount: number, asset: CryptoAsset): string {
-  return `${cryptoFormatter(asset).format(amount)} ${asset}`
-}
-
-export function formatPercent(value: number): string {
-  return `${Math.round(value)}%`
+export function formatCrypto(
+  amount: number,
+  asset: CryptoAsset,
+  currency: FiatCurrency = 'USD',
+): string {
+  return `${cryptoFormatter(asset, currency).format(amount)} ${asset}`
 }
 
 const MINUTE_S = 60

@@ -45,7 +45,7 @@ The older Options API (`data`, `methods`, `computed` as keys on a big object) st
 
 4. **When the effect runs.** `watch` does not run on mount unless you pass `{ immediate: true }`. `useEffect` runs after the first paint. `useHoldings` therefore `watch`es the three fields _and_ calls `onMounted(persist)`, so the first write is not skipped. A React port would be one `useEffect` with those three values in the dependency array.
 
-5. **`watch` vs `useEffect` for derived state.** Both ecosystems have the same footgun: an effect that writes back into state. In React that is `useEffect(() => setEth(100 - btc), [btc])`. In Vue it is `watch(btcPercent, (v) => { ethPercent.value = 100 - v })`. Both create a frame where the pair disagree. `ethPercent` in `useHoldings` is a `computed` for that reason.
+5. **`watch` vs `useEffect` for derived state.** Both ecosystems have the same footgun: an effect that writes back into state. In React that is `useEffect(() => setEth(100 - btc), [btc])`. In Vue it is `watch(btcPercent, (v) => { ethPercent.value = 100 - v })`. Both create a frame where the pair disagree. Ether percent is a `computed` off the Bitcoin percent for that reason.
 
 ## `v-model`
 
@@ -69,7 +69,7 @@ Pinia is a global store. It is the right tool when two distant trees need the sa
 
 **Where they diverge.** A composable's returned refs keep working after setup because Vue's reactivity is in the ref, not in the call stack. A hook's returned values are only current for that render; the next render is a new call with new locals. That is why `useExchangeRates` can `watch` a `MaybeRefOrGetter` (`toValue(amount)` inside the watcher): the composable subscribed to the caller's ref. A React hook just receives `amount` as a number from the latest render and lists it in an effect dep. `MaybeRefOrGetter` exists so a composable can accept a ref, a getter, or a plain value. React does not need that type -- the argument is always "the value from this render."
 
-Functions returned from a composable (`persist`, `refetch`) do not need `useCallback`. They close over refs, not over last render's numbers. In React, a function that closes over `amount` is stale unless it is recreated or it reads from a ref.
+Functions returned from a composable (`refetch`) do not need `useCallback`. They close over refs, not over last render's numbers. In React, a function that closes over `amount` is stale unless it is recreated or it reads from a ref.
 
 ## Vue Query and the typed client
 

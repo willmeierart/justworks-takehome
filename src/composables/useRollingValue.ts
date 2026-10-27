@@ -1,5 +1,6 @@
 import { onScopeDispose, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue'
 
+import { onReducedMotionChange, prefersReducedMotion } from '@/lib/prefersReducedMotion'
 import { tween } from '@/lib/tween'
 
 export const QUOTE_ROLL_MS = 520
@@ -11,15 +12,21 @@ export function useRollingValue(
 ): Ref<number> {
   const current = ref(toValue(source))
   let frame = 0
+  let reduced = prefersReducedMotion()
 
-  const reducedMotion =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const stopMotion = onReducedMotionChange((value) => {
+    reduced = value
+    if (value) {
+      cancelAnimationFrame(frame)
+      current.value = toValue(source)
+    }
+  })
 
   watch(
     () => toValue(source),
     (next) => {
       cancelAnimationFrame(frame)
-      if (reducedMotion || next === current.value) {
+      if (reduced || next === current.value) {
         current.value = next
         return
       }
@@ -41,6 +48,9 @@ export function useRollingValue(
     },
   )
 
-  onScopeDispose(() => cancelAnimationFrame(frame))
+  onScopeDispose(() => {
+    cancelAnimationFrame(frame)
+    stopMotion()
+  })
   return current
 }
