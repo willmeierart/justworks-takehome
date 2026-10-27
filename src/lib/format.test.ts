@@ -4,6 +4,7 @@ import {
   formatAmountInput,
   formatCrypto,
   formatFiat,
+  formatLastRefreshed,
   formatPercent,
   formatUnitPrice,
   parseAmountInput,
@@ -54,5 +55,25 @@ describe('formatUnitPrice', () => {
 describe('formatPercent', () => {
   it('rounds to a whole percent', () => {
     expect(formatPercent(70.4)).toBe('70%')
+  })
+})
+
+describe('formatLastRefreshed', () => {
+  const now = Date.parse('2026-10-27T17:00:00Z')
+
+  it('stays on just now until the nearest minute', () => {
+    expect(formatLastRefreshed(now - 10_000, now)).toBe('just now')
+    expect(formatLastRefreshed(now - 44_000, now)).toBe('just now')
+    expect(formatLastRefreshed(now + 5_000, now)).toBe('just now')
+  })
+
+  it('rounds to minutes, then hours, then days', () => {
+    expect(formatLastRefreshed(now - 46_000, now)).toBe('1 minute ago')
+    expect(formatLastRefreshed(now - 4 * 60_000, now)).toBe('4 minutes ago')
+    expect(formatLastRefreshed(now - 59 * 60_000, now)).toBe('59 minutes ago')
+    expect(formatLastRefreshed(now - 70 * 60_000, now)).toBe('over one hour ago')
+    expect(formatLastRefreshed(now - 2 * 60 * 60_000, now)).toBe('2 hours ago')
+    expect(formatLastRefreshed(now - 26 * 60 * 60_000, now)).toBe('one day ago')
+    expect(formatLastRefreshed(now - 3 * 24 * 60 * 60_000, now)).toBe('3 days ago')
   })
 })

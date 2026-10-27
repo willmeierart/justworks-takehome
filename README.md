@@ -38,6 +38,12 @@ Amount, currency, and split are written to `localStorage`. That restores the for
 
 `useHoldings` and `useExchangeRates` are the only state owners, both used by one screen. A store would add an actions/getters API with no second consumer.
 
+### The layout changes with the window
+
+Below 1024px the screen stays one column, in the order you use it: amount, split, quote. That column is the window, not a 28rem phone frame floated in the margin. The amount and the crypto quantities take their size from the card (`@container`), and the amount steps down again if the typed number would overflow, so a figure like `£ 3,333,333` stays one line.
+
+From 1024px the quote sits beside the amount and the split. Each asset row is a quantity, a fiat total, and a unit price; that is the content that wants the extra width. The group stops growing at 72rem so an ultrawide window does not turn the drag track into a scrollbar.
+
 ### Unit tests of `src/lib`, not Playwright
 
 The brief asked for a small suite of core logic. Allocation math, persist parsing, debounce, and the Coinbase type-guard live in TypeScript modules and are tested with Vitest. An e2e suite would cover the same paths with more setup and flake for a one-screen app.

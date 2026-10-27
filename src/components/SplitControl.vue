@@ -77,7 +77,7 @@ function onEthInput(event: Event) {
 </script>
 
 <template>
-  <div>
+  <div class="figure-frame">
     <p class="text-ink-muted text-sm font-medium">Split</p>
 
     <div class="mt-5 flex items-baseline justify-between gap-3">
@@ -93,10 +93,10 @@ function onEthInput(event: Event) {
           inputmode="numeric"
           autocomplete="off"
           :value="Math.round(btcPercent)"
-          class="text-ink focus-visible:outline-forest w-auto min-w-[1ch] bg-transparent p-0 text-2xl font-semibold tabular-nums outline-none [field-sizing:content] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2"
+          class="figure-split text-ink focus-visible:outline-forest w-auto min-w-[1ch] bg-transparent p-0 font-semibold tabular-nums outline-none [field-sizing:content] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2"
           @input="onBtcInput"
         />
-        <span class="text-ink text-2xl font-semibold">%</span>
+        <span class="figure-split text-ink font-semibold">%</span>
       </div>
 
       <div
@@ -130,10 +130,10 @@ function onEthInput(event: Event) {
           inputmode="numeric"
           autocomplete="off"
           :value="ethPercent"
-          class="text-ink focus-visible:outline-forest w-auto min-w-[1ch] bg-transparent p-0 text-right text-2xl font-semibold tabular-nums outline-none [field-sizing:content] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2"
+          class="figure-split text-ink focus-visible:outline-forest w-auto min-w-[1ch] bg-transparent p-0 text-right font-semibold tabular-nums outline-none [field-sizing:content] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2"
           @input="onEthInput"
         />
-        <span class="text-ink text-2xl font-semibold">%</span>
+        <span class="figure-split text-ink font-semibold">%</span>
       </div>
     </div>
   </div>

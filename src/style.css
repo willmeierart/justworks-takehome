@@ -52,6 +52,62 @@ input[type='number']::-webkit-outer-spin-button {
   appearance: none;
 }
 
+.figure-frame {
+  container-type: inline-size;
+}
+
+.figure-amount {
+  font-size: 1.75rem;
+  line-height: 1.05;
+}
+
+.figure-crypto {
+  font-size: 1.125rem;
+  line-height: 1.15;
+}
+
+.figure-split {
+  font-size: 1.25rem;
+}
+
+@container (min-width: 20rem) {
+  .figure-amount {
+    font-size: 2.25rem;
+  }
+}
+
+@container (min-width: 22rem) {
+  .figure-crypto {
+    font-size: 1.375rem;
+  }
+
+  .figure-split {
+    font-size: 1.5rem;
+  }
+}
+
+@container (min-width: 26rem) {
+  .figure-amount {
+    font-size: 3rem;
+  }
+}
+
+@container (min-width: 32rem) {
+  .figure-crypto {
+    font-size: 1.625rem;
+  }
+}
+
+@container (min-width: 36rem) {
+  .figure-amount {
+    font-size: 3.75rem;
+  }
+
+  .figure-crypto {
+    font-size: 1.875rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

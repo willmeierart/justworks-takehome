@@ -77,10 +77,27 @@ export function formatPercent(value: number): string {
   return `${Math.round(value)}%`
 }
 
-export function formatUpdatedAt(timestamp: number): string {
-  return new Intl.DateTimeFormat(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(timestamp)
+const MINUTE_S = 60
+const HOUR_S = 60 * MINUTE_S
+const DAY_S = 24 * HOUR_S
+
+export function formatLastRefreshed(updatedAt: number, now = Date.now()): string {
+  const seconds = Math.max(0, Math.round((now - updatedAt) / 1000))
+
+  if (seconds < 45) {
+    return 'just now'
+  }
+
+  const minutes = Math.round(seconds / MINUTE_S)
+  if (minutes < 60) {
+    return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`
+  }
+
+  const hours = Math.round(seconds / HOUR_S)
+  if (hours < 24) {
+    return hours <= 1 ? 'over one hour ago' : `${hours} hours ago`
+  }
+
+  const days = Math.round(seconds / DAY_S)
+  return days <= 1 ? 'one day ago' : `${days} days ago`
 }

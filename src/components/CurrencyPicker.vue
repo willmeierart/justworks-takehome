@@ -74,7 +74,11 @@ onUnmounted(() => {
       @keydown="onToggleKeydown"
     >
       <span>{{ symbol }}</span>
-      <svg class="text-ink mb-1 h-3 w-3 opacity-70" viewBox="0 0 12 12" aria-hidden="true">
+      <svg
+        class="text-ink mb-[0.12em] h-[0.32em] w-[0.32em] opacity-70"
+        viewBox="0 0 12 12"
+        aria-hidden="true"
+      >
         <path
           d="M2.4 4.2 6 8l3.6-3.8"
           fill="none"
