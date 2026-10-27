@@ -27,10 +27,17 @@ function onEthInput(event: Event) {
 
 <template>
   <div>
-    <p class="text-ink-muted text-sm font-medium">Split</p>
+    <p class="text-ink-muted text-sm font-semibold">Split</p>
     <p class="text-ink mt-1 text-lg font-semibold">
-      {{ Math.round(btcPercent) }}% Bitcoin / {{ Math.round(100 - btcPercent) }}% Ether
+      <span class="text-btc">{{ Math.round(btcPercent) }}% Bitcoin</span>
+      <span class="text-ink-muted"> / </span>
+      <span class="text-eth">{{ Math.round(100 - btcPercent) }}% Ether</span>
     </p>
+
+    <div class="mt-4 flex h-3 overflow-hidden rounded-full" aria-hidden="true">
+      <div class="bg-btc" :style="{ width: `${btcPercent}%` }" />
+      <div class="bg-eth flex-1" />
+    </div>
 
     <label :for="sliderId" class="sr-only">Bitcoin percent</label>
     <input
@@ -40,13 +47,13 @@ function onEthInput(event: Event) {
       max="100"
       step="1"
       :value="btcPercent"
-      class="accent-ink mt-4 w-full"
+      class="mt-3 w-full"
       @input="onSlider"
     />
 
     <div class="mt-4 grid grid-cols-2 gap-3">
       <div>
-        <label :for="btcId" class="text-ink-muted text-sm">Bitcoin</label>
+        <label :for="btcId" class="text-btc text-sm font-semibold">Bitcoin</label>
         <div class="relative mt-1">
           <input
             :id="btcId"
@@ -55,7 +62,7 @@ function onEthInput(event: Event) {
             max="100"
             inputmode="numeric"
             :value="Math.round(btcPercent)"
-            class="border-line bg-canvas text-ink focus-visible:outline-ink w-full rounded-2xl border px-3 py-2 pr-8 tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2"
+            class="border-btc/30 bg-btc-bg text-ink focus-visible:outline-btc w-full rounded-2xl border px-3 py-2 pr-8 tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2"
             @input="onBtcInput"
           />
           <span
@@ -65,7 +72,7 @@ function onEthInput(event: Event) {
         </div>
       </div>
       <div>
-        <label :for="ethId" class="text-ink-muted text-sm">Ether</label>
+        <label :for="ethId" class="text-eth text-sm font-semibold">Ether</label>
         <div class="relative mt-1">
           <input
             :id="ethId"
@@ -74,7 +81,7 @@ function onEthInput(event: Event) {
             max="100"
             inputmode="numeric"
             :value="Math.round(100 - btcPercent)"
-            class="border-line bg-canvas text-ink focus-visible:outline-ink w-full rounded-2xl border px-3 py-2 pr-8 tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2"
+            class="border-eth/30 bg-eth-bg text-ink focus-visible:outline-eth w-full rounded-2xl border px-3 py-2 pr-8 tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2"
             @input="onEthInput"
           />
           <span

@@ -38,15 +38,15 @@ const updatedLabel = computed(() => {
       </button>
     </div>
 
-    <div v-else class="text-ink-muted flex flex-wrap items-center justify-between gap-3 text-sm">
-      <p>
-        <span v-if="isFetching">Updating rates from Coinbase...</span>
-        <span v-else-if="updatedLabel">Coinbase rates as of {{ updatedLabel }}</span>
-        <span v-else>Fetching Coinbase rates...</span>
+    <div v-else class="flex flex-wrap items-center justify-between gap-3 text-sm">
+      <p class="text-ink-muted">
+        <span v-if="isFetching">Updating live Coinbase prices...</span>
+        <span v-else-if="updatedLabel">Live prices as of {{ updatedLabel }}</span>
+        <span v-else>Fetching live Coinbase prices...</span>
       </p>
       <button
         type="button"
-        class="text-ink focus-visible:outline-ink rounded-pill px-3 py-1.5 text-sm font-semibold ring-1 ring-line focus-visible:outline-2 focus-visible:outline-offset-2"
+        class="bg-accent text-accent-ink focus-visible:outline-forest rounded-pill px-3 py-1.5 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60"
         :disabled="isFetching"
         :aria-disabled="isFetching"
         @click="emit('retry')"

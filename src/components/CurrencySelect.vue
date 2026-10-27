@@ -9,8 +9,8 @@ const groupId = useId()
 
 <template>
   <fieldset class="m-0 border-0 p-0">
-    <legend class="text-ink-muted mb-2 text-sm font-medium">Currency</legend>
-    <div class="bg-canvas flex gap-1 rounded-pill p-1 ring-1 ring-line">
+    <legend class="text-ink-muted mb-2 text-sm font-semibold">Currency</legend>
+    <div class="bg-canvas/80 flex gap-1 rounded-pill p-1 ring-1 ring-line">
       <label
         v-for="code in FIAT_CURRENCIES"
         :key="code"
@@ -26,7 +26,7 @@ const groupId = useId()
           class="peer sr-only"
         />
         <span
-          class="rounded-pill text-ink-muted peer-checked:bg-card peer-checked:text-ink peer-focus-visible:outline-ink block px-3 py-2 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2"
+          class="rounded-pill text-ink-muted peer-checked:bg-forest peer-checked:text-accent block px-3 py-2 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-forest"
         >
           {{ code }}
         </span>

@@ -15,31 +15,33 @@ const allocation = useAllocation(amount, btcPercent, rates)
 
 <template>
   <div class="min-h-svh px-4 py-8 sm:px-6 sm:py-12">
-    <div class="mx-auto flex w-full max-w-xl flex-col gap-8">
+    <div class="mx-auto flex w-full max-w-xl flex-col gap-6">
       <header>
         <p
-          class="bg-accent text-accent-ink inline-flex rounded-pill px-3 py-1 text-xs font-semibold tracking-wide uppercase"
+          class="bg-forest text-accent inline-flex rounded-pill px-3 py-1 text-xs font-semibold tracking-wide uppercase"
         >
           Holdings
         </p>
-        <h1 class="text-ink mt-1 text-3xl font-semibold tracking-tight">
+        <h1 class="text-ink mt-3 text-3xl font-semibold tracking-tight">
           Split cash into BTC and ETH
         </h1>
         <p class="text-ink-muted mt-2 text-base">
-          Keep a starting 70/30 split, or change it. The quote uses live Coinbase rates for the
-          currency you pick.
+          Start at 70/30, then change the mix. Prices update from Coinbase for the currency you
+          pick.
         </p>
       </header>
 
-      <main class="bg-card rounded-card flex flex-col gap-8 p-5 shadow-sm ring-1 ring-line sm:p-8">
-        <AmountInput v-model="amount" />
+      <main
+        class="bg-card/95 rounded-card flex flex-col gap-6 p-4 shadow-lg shadow-forest/5 ring-1 ring-line sm:p-7"
+      >
+        <AmountInput v-model="amount" :currency="currency" />
         <CurrencySelect v-model="currency" />
         <SplitControl v-model="btcPercent" />
         <AllocationCards
           :allocation="allocation"
           :currency="currency"
+          :rates="rates"
           :has-amount="amount != null && amount > 0"
-          :has-rates="rates != null"
           :is-fetching="isFetching"
         />
         <RateStatus

@@ -4,17 +4,23 @@
   --font-sans: 'Segoe UI', system-ui, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
 
-  --color-canvas: #f6f4ef;
-  --color-ink: #163300;
-  --color-ink-muted: #454c43;
+  --color-canvas: #eef8d8;
+  --color-ink: #12260a;
+  --color-ink-muted: #3d5340;
   --color-accent: #9fe870;
-  --color-accent-ink: #163300;
+  --color-accent-ink: #12260a;
   --color-card: #ffffff;
   --color-danger: #c2410c;
-  --color-danger-bg: #fff4ed;
-  --color-line: #e4e1d8;
+  --color-danger-bg: #fff1e8;
+  --color-line: #d5e3c4;
+  --color-btc: #f08a14;
+  --color-btc-bg: #fff1d6;
+  --color-eth: #4f6dff;
+  --color-eth-bg: #e8ecff;
+  --color-mint: #c8f39a;
+  --color-forest: #163b12;
 
-  --radius-card: 1.5rem;
+  --radius-card: 1.75rem;
   --radius-pill: 999px;
 }
 
@@ -26,9 +32,12 @@ html {
 body {
   margin: 0;
   min-height: 100svh;
-  background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  background:
+    radial-gradient(900px 480px at 8% -8%, #b6f36a 0%, transparent 52%),
+    radial-gradient(720px 420px at 100% 0%, #9aa8ff 0%, transparent 46%),
+    radial-gradient(640px 380px at 90% 110%, #ffc56a 0%, transparent 42%), #eef8d8;
 }
 
 #app {
@@ -36,7 +45,7 @@ body {
 }
 
 input[type='range'] {
-  accent-color: var(--color-ink);
+  accent-color: var(--color-forest);
 }
 
 @media (prefers-reduced-motion: reduce) {
