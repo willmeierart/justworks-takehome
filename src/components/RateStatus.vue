@@ -40,9 +40,9 @@ const updatedLabel = computed(() => {
 
     <div v-else class="text-ink-muted flex flex-wrap items-center justify-between gap-3 text-sm">
       <p>
-        <span v-if="isFetching">Updating rates from Coinbase…</span>
+        <span v-if="isFetching">Updating rates from Coinbase...</span>
         <span v-else-if="updatedLabel">Coinbase rates as of {{ updatedLabel }}</span>
-        <span v-else>Fetching Coinbase rates…</span>
+        <span v-else>Fetching Coinbase rates...</span>
       </p>
       <button
         type="button"

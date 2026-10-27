@@ -56,7 +56,7 @@ function onEthInput(event: Event) {
             inputmode="numeric"
             :value="Math.round(btcPercent)"
             class="border-line bg-canvas text-ink focus-visible:outline-ink w-full rounded-2xl border px-3 py-2 pr-8 tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2"
-            @change="onBtcInput"
+            @input="onBtcInput"
           />
           <span
             class="text-ink-muted pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm"
@@ -75,7 +75,7 @@ function onEthInput(event: Event) {
             inputmode="numeric"
             :value="Math.round(100 - btcPercent)"
             class="border-line bg-canvas text-ink focus-visible:outline-ink w-full rounded-2xl border px-3 py-2 pr-8 tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2"
-            @change="onEthInput"
+            @input="onEthInput"
           />
           <span
             class="text-ink-muted pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm"

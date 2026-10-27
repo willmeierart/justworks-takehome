@@ -14,7 +14,7 @@ defineProps<{
 
 <template>
   <section aria-live="polite" aria-atomic="true" :aria-busy="isFetching">
-    <h2 class="text-ink-muted text-sm font-medium">You�ll get</h2>
+    <h2 class="text-ink-muted text-sm font-medium">You'll get</h2>
 
     <p v-if="!hasAmount" class="text-ink-muted mt-3 text-base">
       Enter an amount to see how much Bitcoin and Ether to buy.
@@ -27,7 +27,7 @@ defineProps<{
           {{
             hasRates && allocation.btcCrypto != null
               ? formatCrypto(allocation.btcCrypto, 'BTC')
-              : '�'
+              : '--'
           }}
         </p>
         <p class="text-ink-muted mt-1 text-sm tabular-nums">
@@ -41,7 +41,7 @@ defineProps<{
           {{
             hasRates && allocation.ethCrypto != null
               ? formatCrypto(allocation.ethCrypto, 'ETH')
-              : '�'
+              : '--'
           }}
         </p>
         <p class="text-ink-muted mt-1 text-sm tabular-nums">
