@@ -40,6 +40,7 @@ const allocation = useAllocation(amount, btcPercent, rates)
           :currency="currency"
           :has-amount="amount != null && amount > 0"
           :has-rates="rates != null"
+          :is-fetching="isFetching"
         />
         <RateStatus
           :is-fetching="isFetching"

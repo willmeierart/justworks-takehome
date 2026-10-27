@@ -48,10 +48,10 @@
 
 ## Ticket 5 — Accessibility and lint-clean templates
 
-- [ ] Named/labeled controls; currency `fieldset`
-- [ ] Results `aria-live` (polite)
-- [ ] Keyboard path for amount, currency, slider, percents, retry
-- [ ] Visible focus, contrast, no positive tabindex
-- [ ] `npm run lint` clean, including vuejs-accessibility
+- [x] Named/labeled controls; currency `fieldset`
+- [x] Results `aria-live` (polite)
+- [x] Keyboard path for amount, currency, slider, percents, retry
+- [x] Visible focus, contrast, no positive tabindex
+- [x] `npm run lint` clean, including vuejs-accessibility
 
 **Commit:** `tighten accessibility and lint`

@@ -8,11 +8,12 @@ defineProps<{
   currency: FiatCurrency
   hasAmount: boolean
   hasRates: boolean
+  isFetching: boolean
 }>()
 </script>
 
 <template>
-  <section aria-live="polite" aria-atomic="true">
+  <section aria-live="polite" aria-atomic="true" :aria-busy="isFetching">
     <h2 class="text-ink-muted text-sm font-medium">You�ll get</h2>
 
     <p v-if="!hasAmount" class="text-ink-muted mt-3 text-base">

@@ -48,6 +48,7 @@ const updatedLabel = computed(() => {
         type="button"
         class="text-ink focus-visible:outline-ink rounded-pill px-3 py-1.5 text-sm font-semibold ring-1 ring-line focus-visible:outline-2 focus-visible:outline-offset-2"
         :disabled="isFetching"
+        :aria-disabled="isFetching"
         @click="emit('retry')"
       >
         Refresh
