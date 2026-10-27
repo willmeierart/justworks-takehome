@@ -13,10 +13,6 @@
   --color-danger: #c2410c;
   --color-danger-bg: #fff1e8;
   --color-line: #d5e3c4;
-  --color-btc: #f08a14;
-  --color-btc-bg: #fff1d6;
-  --color-eth: #4f6dff;
-  --color-eth-bg: #e8ecff;
   --color-mint: #c8f39a;
   --color-forest: #163b12;
 
@@ -36,8 +32,7 @@ body {
   font-family: var(--font-sans);
   background:
     radial-gradient(900px 480px at 8% -8%, #b6f36a 0%, transparent 52%),
-    radial-gradient(720px 420px at 100% 0%, #9aa8ff 0%, transparent 46%),
-    radial-gradient(640px 380px at 90% 110%, #ffc56a 0%, transparent 42%), #eef8d8;
+    radial-gradient(720px 400px at 100% 8%, #d4f5a8 0%, transparent 48%), #eef8d8;
 }
 
 #app {

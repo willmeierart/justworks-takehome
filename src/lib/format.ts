@@ -65,10 +65,6 @@ export function formatAmountInput(raw: string): string {
   return hasDot ? `${grouped}.${fraction}` : grouped
 }
 
-export function currencySymbol(currency: FiatCurrency): string {
-  return { USD: '$', EUR: '�', GBP: '�' }[currency]
-}
-
 export function formatCrypto(amount: number, asset: CryptoAsset): string {
   const fractionDigits = asset === 'BTC' ? 8 : 6
   return `${new Intl.NumberFormat(undefined, {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AllocationCards from '@/components/AllocationCards.vue'
 import AmountInput from '@/components/AmountInput.vue'
-import CurrencySelect from '@/components/CurrencySelect.vue'
 import RateStatus from '@/components/RateStatus.vue'
 import SplitControl from '@/components/SplitControl.vue'
 import { useAllocation } from '@/composables/useAllocation'
@@ -34,8 +33,7 @@ const allocation = useAllocation(amount, btcPercent, rates)
       <main
         class="bg-card/95 rounded-card flex flex-col gap-6 p-4 shadow-lg shadow-forest/5 ring-1 ring-line sm:p-7"
       >
-        <AmountInput v-model="amount" :currency="currency" />
-        <CurrencySelect v-model="currency" />
+        <AmountInput v-model="amount" v-model:currency="currency" />
         <SplitControl v-model="btcPercent" />
         <AllocationCards
           :allocation="allocation"
