@@ -16,12 +16,12 @@
 
 ## Ticket 2 — Domain logic and tests
 
-- [ ] `src/lib/calculateAllocation.ts` — `crypto = amount * (percent/100) * rate`
-- [ ] Tests: 70/30, 50/50, 100/0, zero amount, missing rate
-- [ ] `src/lib/persist.ts` — parse/validate; corrupt payload ? defaults
-- [ ] `src/lib/format.ts` — `Intl` fiat + crypto precision
-- [ ] `src/lib/debounce.ts` — tested helper for amount-triggered refetch
-- [ ] `src/lib/coinbase.ts` — typed `fetch`, `AbortSignal`, type-guard
+- [x] `src/lib/calculateAllocation.ts` — `crypto = amount * (percent/100) * rate`
+- [x] Tests: 70/30, 50/50, 100/0, zero amount, missing rate
+- [x] `src/lib/persist.ts` — parse/validate; corrupt payload ? defaults
+- [x] `src/lib/format.ts` — `Intl` fiat + crypto precision
+- [x] `src/lib/debounce.ts` — tested helper for amount-triggered refetch
+- [x] `src/lib/coinbase.ts` — typed `fetch`, `AbortSignal`, type-guard
 
 **Commit:** `add allocation math, persistence, and tests`
 
