@@ -27,12 +27,12 @@
 
 ## Ticket 3 — Query and holdings state
 
-- [ ] `@tanstack/vue-query` + `VueQueryPlugin`
-- [ ] `useExchangeRates`: queryKey includes currency; `queryFn` uses typed client + `signal`
-- [ ] Currency change ? immediate refetch; amount change ? debounced invalidate/refetch
-- [ ] Expose `data`, `isFetching`, `isError`, `refetch`, `dataUpdatedAt`
-- [ ] `useHoldings`: amount, currency, btcPercent + localStorage
-- [ ] Allocation is `computed` from holdings + rates
+- [x] `@tanstack/vue-query` + `VueQueryPlugin`
+- [x] `useExchangeRates`: queryKey includes currency; `queryFn` uses typed client + `signal`
+- [x] Currency change ? immediate refetch; amount change ? debounced invalidate/refetch
+- [x] Expose `data`, `isFetching`, `isError`, `refetch`, `dataUpdatedAt`
+- [x] `useHoldings`: amount, currency, btcPercent + localStorage
+- [x] Allocation is `computed` from holdings + rates
 
 **Commit:** `fetch exchange rates with vue query`
 
