@@ -28,10 +28,14 @@ const props = defineProps<{
           </p>
           <p class="text-ink-muted text-sm font-medium">Bitcoin</p>
         </div>
-        <p class="text-ink-muted mt-1 text-sm tabular-nums">
-          {{ formatUnitPrice(props.rates?.BTC, currency) ?? 'Price loading' }}
-          <span v-if="hasAmount"> · {{ formatFiat(allocation.btcFiat, currency) }}</span>
-        </p>
+        <div class="text-ink-muted mt-1 flex items-baseline justify-between gap-3 text-sm">
+          <p class="tabular-nums">
+            {{ hasAmount ? formatFiat(allocation.btcFiat, currency) : formatFiat(0, currency) }}
+          </p>
+          <p class="tabular-nums">
+            {{ formatUnitPrice(props.rates?.BTC, currency) ?? 'Price loading' }} / BTC
+          </p>
+        </div>
       </div>
 
       <div>
@@ -45,10 +49,14 @@ const props = defineProps<{
           </p>
           <p class="text-ink-muted text-sm font-medium">Ether</p>
         </div>
-        <p class="text-ink-muted mt-1 text-sm tabular-nums">
-          {{ formatUnitPrice(props.rates?.ETH, currency) ?? 'Price loading' }}
-          <span v-if="hasAmount"> · {{ formatFiat(allocation.ethFiat, currency) }}</span>
-        </p>
+        <div class="text-ink-muted mt-1 flex items-baseline justify-between gap-3 text-sm">
+          <p class="tabular-nums">
+            {{ hasAmount ? formatFiat(allocation.ethFiat, currency) : formatFiat(0, currency) }}
+          </p>
+          <p class="tabular-nums">
+            {{ formatUnitPrice(props.rates?.ETH, currency) ?? 'Price loading' }} / ETH
+          </p>
+        </div>
       </div>
     </div>
   </section>

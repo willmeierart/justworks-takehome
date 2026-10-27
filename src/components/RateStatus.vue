@@ -49,7 +49,7 @@ const updatedLabel = computed(() => {
         {{ isFetching ? 'Updating prices' : 'Refresh prices' }}
       </button>
       <p class="text-ink-muted mt-3 text-center text-sm">
-        <span v-if="updatedLabel">Coinbase · {{ updatedLabel }}</span>
+        <span v-if="updatedLabel">Coinbase, {{ updatedLabel }}</span>
         <span v-else>Coinbase live prices</span>
       </p>
     </template>
