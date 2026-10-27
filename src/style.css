@@ -35,6 +35,10 @@ body {
   min-height: 100svh;
 }
 
+input[type='range'] {
+  accent-color: var(--color-ink);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -1,0 +1,88 @@
+<script setup lang="ts">
+const btcPercent = defineModel<number>({ required: true })
+
+const sliderId = 'split-btc-slider'
+const btcId = 'split-btc-percent'
+const ethId = 'split-eth-percent'
+
+function clamp(value: number): number {
+  if (!Number.isFinite(value)) {
+    return btcPercent.value
+  }
+  return Math.min(100, Math.max(0, Math.round(value)))
+}
+
+function onSlider(event: Event) {
+  btcPercent.value = clamp(Number((event.target as HTMLInputElement).value))
+}
+
+function onBtcInput(event: Event) {
+  btcPercent.value = clamp(Number((event.target as HTMLInputElement).value))
+}
+
+function onEthInput(event: Event) {
+  btcPercent.value = clamp(100 - Number((event.target as HTMLInputElement).value))
+}
+</script>
+
+<template>
+  <div>
+    <p class="text-ink-muted text-sm font-medium">Split</p>
+    <p class="text-ink mt-1 text-lg font-semibold">
+      {{ Math.round(btcPercent) }}% Bitcoin / {{ Math.round(100 - btcPercent) }}% Ether
+    </p>
+
+    <label :for="sliderId" class="sr-only">Bitcoin percent</label>
+    <input
+      :id="sliderId"
+      type="range"
+      min="0"
+      max="100"
+      step="1"
+      :value="btcPercent"
+      class="accent-ink mt-4 w-full"
+      @input="onSlider"
+    />
+
+    <div class="mt-4 grid grid-cols-2 gap-3">
+      <div>
+        <label :for="btcId" class="text-ink-muted text-sm">Bitcoin</label>
+        <div class="relative mt-1">
+          <input
+            :id="btcId"
+            type="number"
+            min="0"
+            max="100"
+            inputmode="numeric"
+            :value="Math.round(btcPercent)"
+            class="border-line bg-canvas text-ink focus-visible:outline-ink w-full rounded-2xl border px-3 py-2 pr-8 tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2"
+            @change="onBtcInput"
+          />
+          <span
+            class="text-ink-muted pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm"
+            >%</span
+          >
+        </div>
+      </div>
+      <div>
+        <label :for="ethId" class="text-ink-muted text-sm">Ether</label>
+        <div class="relative mt-1">
+          <input
+            :id="ethId"
+            type="number"
+            min="0"
+            max="100"
+            inputmode="numeric"
+            :value="Math.round(100 - btcPercent)"
+            class="border-line bg-canvas text-ink focus-visible:outline-ink w-full rounded-2xl border px-3 py-2 pr-8 tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2"
+            @change="onEthInput"
+          />
+          <span
+            class="text-ink-muted pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm"
+            >%</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

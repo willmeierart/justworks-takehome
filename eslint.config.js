@@ -27,6 +27,8 @@ export default defineConfig(
     },
     rules: {
       'vue/multi-word-component-names': 'off',
+      // Either wrapping the control or using for/id is valid HTML.
+      'vuejs-accessibility/label-has-for': ['error', { required: { some: ['nesting', 'id'] } }],
     },
   },
   {

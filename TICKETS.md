@@ -38,11 +38,11 @@
 
 ## Ticket 4 — Wise-inspired UI
 
-- [ ] Tailwind tokens (canvas, ink, accent, radius, type)
-- [ ] Amount, currency, split, allocation cards, rate status components
-- [ ] `App.vue` as composition root
-- [ ] Empty, invalid, loading, error, 0/100 split states
-- [ ] Responsive from ~360px; reduced motion
+- [x] Tailwind tokens (canvas, ink, accent, radius, type)
+- [x] Amount, currency, split, allocation cards, rate status components
+- [x] `App.vue` as composition root
+- [x] Empty, invalid, loading, error, 0/100 split states
+- [x] Responsive from ~360px; reduced motion
 
 **Commit:** `build wise-inspired holdings calculator`
 

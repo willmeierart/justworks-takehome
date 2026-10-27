@@ -47,11 +47,11 @@ export function useExchangeRates(
 
   return {
     rates: computed(() => query.data.value ?? null),
-    isPending: query.isPending,
-    isFetching: query.isFetching,
-    isError: query.isError,
-    error: query.error,
-    dataUpdatedAt: query.dataUpdatedAt,
+    isPending: computed(() => query.isPending.value),
+    isFetching: computed(() => query.isFetching.value),
+    isError: computed(() => query.isError.value),
+    error: computed(() => query.error.value),
+    dataUpdatedAt: computed(() => query.dataUpdatedAt.value),
     refetch: query.refetch,
   }
 }
