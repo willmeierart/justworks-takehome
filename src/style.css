@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Segoe UI', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+
+  --color-canvas: #f6f4ef;
+  --color-ink: #163300;
+  --color-ink-muted: #454c43;
+  --color-accent: #9fe870;
+  --color-accent-ink: #163300;
+  --color-card: #ffffff;
+  --color-danger: #c2410c;
+  --color-danger-bg: #fff4ed;
+  --color-line: #e4e1d8;
+
+  --radius-card: 1.5rem;
+  --radius-pill: 999px;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+#app {
+  min-height: 100svh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
