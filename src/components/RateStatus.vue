@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 
-import { formatLastRefreshed } from '@/lib/format'
+import { formatLastRefreshed } from '@/domain/format'
 
 const props = defineProps<{
   isFetching: boolean

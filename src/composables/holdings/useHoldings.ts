@@ -1,7 +1,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 
-import { HOLDINGS_STORAGE_KEY, parseHoldings, serializeHoldings } from '@/lib/persist'
-import type { FiatCurrency, Holdings } from '@/lib/types'
+import { HOLDINGS_STORAGE_KEY, parseHoldings, serializeHoldings } from '@/domain/persist'
+import type { FiatCurrency, Holdings } from '@/domain/types'
 
 function readStoredHoldings(): Holdings {
   if (typeof localStorage === 'undefined') {
@@ -31,13 +31,6 @@ export function useHoldings() {
     )
   }
 
-  function setBtcPercent(value: number) {
-    if (!Number.isFinite(value)) {
-      return
-    }
-    btcPercent.value = Math.min(100, Math.max(0, value))
-  }
-
   watch([amount, currency, btcPercent], persist)
   onMounted(persist)
 
@@ -46,6 +39,5 @@ export function useHoldings() {
     currency,
     btcPercent,
     ethPercent,
-    setBtcPercent,
   }
 }

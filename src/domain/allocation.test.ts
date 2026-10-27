@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { calculateAllocation } from './calculateAllocation'
+import { calculateAllocation } from './allocation'
 import type { ExchangeRates } from './types'
 
 const usdRates: ExchangeRates = {

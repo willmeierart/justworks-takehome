@@ -3,13 +3,16 @@ import AllocationCards from '@/components/AllocationCards.vue'
 import AmountInput from '@/components/AmountInput.vue'
 import RateStatus from '@/components/RateStatus.vue'
 import SplitControl from '@/components/SplitControl.vue'
-import { useAllocation } from '@/composables/useAllocation'
-import { useExchangeRates } from '@/composables/useExchangeRates'
-import { useHoldings } from '@/composables/useHoldings'
+import { QUOTE_SETTLE_MS, useDeferred } from '@/composables/useDeferred'
+import { useAllocation } from '@/composables/holdings/useAllocation'
+import { useExchangeRates } from '@/composables/holdings/useExchangeRates'
+import { useHoldings } from '@/composables/holdings/useHoldings'
 
 const { amount, currency, btcPercent } = useHoldings()
 const { rates, isFetching, isError, dataUpdatedAt, refetch } = useExchangeRates(currency, amount)
-const allocation = useAllocation(amount, btcPercent, rates)
+const settledAmount = useDeferred(amount, QUOTE_SETTLE_MS)
+const settledPercent = useDeferred(btcPercent, QUOTE_SETTLE_MS)
+const allocation = useAllocation(settledAmount, settledPercent, rates)
 </script>
 
 <template>
@@ -41,7 +44,6 @@ const allocation = useAllocation(amount, btcPercent, rates)
           :allocation="allocation"
           :currency="currency"
           :rates="rates"
-          :has-amount="amount != null && amount > 0"
           :is-fetching="isFetching"
         />
       </section>

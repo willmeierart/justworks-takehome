@@ -1,7 +1,7 @@
 import { computed, toValue, type MaybeRefOrGetter } from 'vue'
 
-import { calculateAllocation } from '@/lib/calculateAllocation'
-import type { ExchangeRates } from '@/lib/types'
+import { calculateAllocation } from '@/domain/allocation'
+import type { ExchangeRates } from '@/domain/types'
 
 export function useAllocation(
   amount: MaybeRefOrGetter<number | null>,

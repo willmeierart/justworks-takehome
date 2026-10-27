@@ -1,36 +1,45 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 
-import type { Allocation } from '@/lib/calculateAllocation'
-import { formatCrypto, formatFiat, formatUnitPrice } from '@/lib/format'
-import type { CryptoAsset, ExchangeRates, FiatCurrency } from '@/lib/types'
+import RollingFigure from '@/components/RollingFigure.vue'
+import type { Allocation } from '@/domain/allocation'
+import { formatCrypto, formatFiat } from '@/domain/format'
+import type { ExchangeRates, FiatCurrency } from '@/domain/types'
 
 const props = defineProps<{
   allocation: Allocation
   currency: FiatCurrency
   rates: ExchangeRates | null
-  hasAmount: boolean
   isFetching: boolean
 }>()
 
-const rows = computed(() => {
-  const assets: { code: CryptoAsset; name: string; crypto: number | null }[] = [
-    { code: 'BTC', name: 'Bitcoin', crypto: props.allocation.btcCrypto },
-    { code: 'ETH', name: 'Ether', crypto: props.allocation.ethCrypto },
-  ]
+/** Last good rates stay on screen so a currency switch can roll instead of remount. */
+const market = shallowRef<ExchangeRates | null>(null)
 
-  return assets.map((asset) => {
-    const fiat = asset.code === 'BTC' ? props.allocation.btcFiat : props.allocation.ethFiat
-    const price = formatUnitPrice(props.rates?.[asset.code], props.currency)
+watch(
+  () => props.rates,
+  (rates) => {
+    if (rates) market.value = rates
+  },
+  { immediate: true },
+)
+
+const rows = computed(() => {
+  const rates = market.value
+  const currency = rates != null ? rates.currency : props.currency
+
+  return (['BTC', 'ETH'] as const).map((code) => {
+    const fiat = code === 'BTC' ? props.allocation.btcFiat : props.allocation.ethFiat
+    const rate = rates?.[code]
     return {
-      code: asset.code,
-      name: asset.name,
-      crypto:
-        props.hasAmount && props.rates && asset.crypto != null
-          ? formatCrypto(asset.crypto, asset.code)
-          : `0.00 ${asset.code}`,
-      fiat: formatFiat(props.hasAmount ? fiat : 0, props.currency),
-      price: price == null ? 'Price loading' : `${price} / ${asset.code}`,
+      code,
+      asOf: currency,
+      fiat,
+      crypto: rate == null ? 0 : fiat * rate,
+      priceValue: rate == null || rate <= 0 ? null : 1 / rate,
+      cryptoText: (value: number) => formatCrypto(value, code),
+      fiatText: (value: number) => formatFiat(value, currency),
+      priceText: (value: number) => `${formatFiat(value, currency)} / ${code}`,
     }
   })
 })
@@ -47,22 +56,18 @@ const rows = computed(() => {
 
     <div class="mt-5 flex flex-col gap-8 lg:flex-1 lg:justify-between">
       <div v-for="row in rows" :key="row.code">
-        <div
-          class="flex flex-col gap-1 @min-[24rem]:flex-row @min-[24rem]:items-baseline @min-[24rem]:justify-between @min-[24rem]:gap-4"
+        <p
+          class="figure-crypto text-ink min-w-0 font-semibold tracking-tight whitespace-nowrap tabular-nums"
         >
-          <p class="text-ink-muted text-sm font-medium @min-[24rem]:order-2">{{ row.name }}</p>
-          <p
-            class="figure-crypto text-ink min-w-0 font-semibold tracking-tight whitespace-nowrap tabular-nums @min-[24rem]:order-1"
-          >
-            {{ row.crypto }}
-          </p>
-        </div>
-        <div
-          class="text-ink-muted mt-1 flex flex-col gap-0.5 text-sm tabular-nums @min-[24rem]:flex-row @min-[24rem]:items-baseline @min-[24rem]:justify-between @min-[24rem]:gap-4"
-        >
-          <p>{{ row.fiat }}</p>
-          <p>{{ row.price }}</p>
-        </div>
+          <RollingFigure :value="row.crypto" :format="row.cryptoText" :as-of="row.asOf" />
+        </p>
+        <p class="figure-fiat text-ink-muted mt-1.5 font-medium tabular-nums">
+          <RollingFigure :value="row.fiat" :format="row.fiatText" :as-of="row.asOf" />
+        </p>
+        <p v-if="row.priceValue != null" class="figure-price mt-1 tabular-nums">
+          <RollingFigure :value="row.priceValue" :format="row.priceText" :as-of="row.asOf" />
+        </p>
+        <p v-else class="figure-price mt-1 tabular-nums">Price loading</p>
       </div>
     </div>
   </section>

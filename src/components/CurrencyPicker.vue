@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 
-import { FIAT_CURRENCIES, FIAT_UNITS, type FiatCurrency } from '@/lib/types'
+import { FIAT_CURRENCIES, FIAT_UNITS, type FiatCurrency } from '@/domain/types'
 
 const currency = defineModel<FiatCurrency>({ required: true })
 
@@ -31,10 +31,32 @@ function onDocumentPointer(event: PointerEvent) {
   }
 }
 
+function optionButtons(): HTMLButtonElement[] {
+  return [...(root.value?.querySelectorAll<HTMLButtonElement>('[role="option"]') ?? [])]
+}
+
+function focusToggle() {
+  root.value?.querySelector<HTMLButtonElement>('button')?.focus()
+}
+
 function onToggleKeydown(event: KeyboardEvent) {
-  if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+  if (
+    event.key === 'ArrowDown' ||
+    event.key === 'ArrowUp' ||
+    event.key === 'Enter' ||
+    event.key === ' '
+  ) {
     event.preventDefault()
     open.value = true
+    const goToEnd = event.key === 'ArrowUp'
+    void nextTick(() => {
+      const options = optionButtons()
+      const selected = options.findIndex(
+        (button) => button.getAttribute('aria-selected') === 'true',
+      )
+      const index = goToEnd ? options.length - 1 : Math.max(selected, 0)
+      options[index]?.focus()
+    })
   }
   if (event.key === 'Escape') {
     close()
@@ -42,11 +64,24 @@ function onToggleKeydown(event: KeyboardEvent) {
 }
 
 function onOptionKeydown(event: KeyboardEvent, code: FiatCurrency) {
+  const options = optionButtons()
+  const index = options.indexOf(event.currentTarget as HTMLButtonElement)
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault()
+    const next = event.key === 'ArrowDown' ? index + 1 : index - 1
+    options[(next + options.length) % options.length]?.focus()
+  }
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault()
     choose(code)
+    void nextTick(focusToggle)
   }
   if (event.key === 'Escape') {
+    event.preventDefault()
+    close()
+    focusToggle()
+  }
+  if (event.key === 'Tab') {
     close()
   }
 }

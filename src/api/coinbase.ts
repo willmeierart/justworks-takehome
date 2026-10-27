@@ -1,4 +1,4 @@
-import { FIAT_CURRENCIES, type ExchangeRates, type FiatCurrency } from './types'
+import { FIAT_CURRENCIES, type ExchangeRates, type FiatCurrency } from '@/domain/types'
 
 const COINBASE_RATES_URL = 'https://api.coinbase.com/v2/exchange-rates'
 

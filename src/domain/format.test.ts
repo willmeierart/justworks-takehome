@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  caretAfterKeptChars,
   formatAmountInput,
   formatCrypto,
   formatFiat,
@@ -8,6 +9,7 @@ import {
   formatPercent,
   formatUnitPrice,
   parseAmountInput,
+  sanitizePercentDraft,
 } from './format'
 
 describe('formatFiat', () => {
@@ -38,6 +40,13 @@ describe('amount input grouping', () => {
     expect(formatAmountInput('10000.56')).toBe('10,000.56')
   })
 
+  it('drops letters and keeps one decimal', () => {
+    expect(formatAmountInput('10a00')).toBe('1,000')
+    expect(formatAmountInput('12abc.3x4')).toBe('12.34')
+    expect(formatAmountInput('1e2')).toBe('12')
+    expect(formatAmountInput('abc')).toBe('')
+  })
+
   it('parses grouped values back to a number', () => {
     expect(parseAmountInput('10,000')).toBe(10000)
     expect(parseAmountInput('10,000.50')).toBe(10000.5)
@@ -49,6 +58,22 @@ describe('formatUnitPrice', () => {
   it('inverts crypto-per-fiat into fiat per coin', () => {
     expect(formatUnitPrice(0.00002, 'USD')).toMatch(/50,000/)
     expect(formatUnitPrice(null, 'USD')).toBeNull()
+  })
+})
+
+describe('sanitizePercentDraft', () => {
+  it('keeps digits and clamps to 0-100', () => {
+    expect(sanitizePercentDraft('50a')).toBe('50')
+    expect(sanitizePercentDraft('abc')).toBe('')
+    expect(sanitizePercentDraft('150')).toBe('100')
+    expect(sanitizePercentDraft('007')).toBe('7')
+  })
+})
+
+describe('caretAfterKeptChars', () => {
+  it('lands on the same digit after commas are inserted', () => {
+    expect(caretAfterKeptChars('1,000', '1000', 4)).toBe(5)
+    expect(caretAfterKeptChars('1,000', '1a000', 2)).toBe(1)
   })
 })
 

@@ -65,12 +65,52 @@ export function formatAmountInput(raw: string): string {
   return hasDot ? `${grouped}.${fraction}` : grouped
 }
 
-export function formatCrypto(amount: number, asset: CryptoAsset): string {
+/** Digits only, clamped to 0-100. Empty while the field is being cleared. */
+export function sanitizePercentDraft(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 3)
+  if (digits === '') {
+    return ''
+  }
+  return String(Math.min(100, Number(digits)))
+}
+
+/** Place a caret from `source` onto `formatted`, counting digits and decimal points. */
+export function caretAfterKeptChars(formatted: string, source: string, caret: number): number {
+  const kept = source.slice(0, Math.max(0, caret)).replace(/[^\d.]/g, '')
+  if (kept.length === 0) {
+    return 0
+  }
+
+  let seen = 0
+  for (let i = 0; i < formatted.length; i++) {
+    const char = formatted[i] ?? ''
+    if (char === '.' || (char >= '0' && char <= '9')) {
+      seen++
+    }
+    if (seen === kept.length) {
+      return i + 1
+    }
+  }
+  return formatted.length
+}
+
+const cryptoFormatters = new Map<CryptoAsset, Intl.NumberFormat>()
+
+function cryptoFormatter(asset: CryptoAsset): Intl.NumberFormat {
+  const existing = cryptoFormatters.get(asset)
+  if (existing) return existing
+
   const fractionDigits = asset === 'BTC' ? 8 : 6
-  return `${new Intl.NumberFormat(undefined, {
+  const formatter = new Intl.NumberFormat(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: fractionDigits,
-  }).format(amount)} ${asset}`
+  })
+  cryptoFormatters.set(asset, formatter)
+  return formatter
+}
+
+export function formatCrypto(amount: number, asset: CryptoAsset): string {
+  return `${cryptoFormatter(asset).format(amount)} ${asset}`
 }
 
 export function formatPercent(value: number): string {

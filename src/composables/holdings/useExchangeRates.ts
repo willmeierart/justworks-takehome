@@ -1,10 +1,10 @@
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed, onUnmounted, toValue, watch, type MaybeRefOrGetter } from 'vue'
 
-import { fetchExchangeRates } from '@/lib/coinbase'
+import { fetchExchangeRates } from '@/api/coinbase'
+import { RATES_STALE_TIME_MS } from '@/api/queryClient'
+import type { FiatCurrency } from '@/domain/types'
 import { debounce } from '@/lib/debounce'
-import { RATES_STALE_TIME_MS } from '@/lib/queryClient'
-import type { FiatCurrency } from '@/lib/types'
 
 export const RATES_QUERY_KEY = 'exchange-rates'
 export const AMOUNT_REFETCH_DEBOUNCE_MS = 400
