@@ -46,7 +46,7 @@ function setFromClientX(clientX: number) {
   if (width <= 0) {
     return
   }
-  btcPercent.value = clamp(((clientX - rect.left - padLeft) / width) * 100)
+  btcPercent.value = clamp(100 - ((clientX - rect.left - padLeft) / width) * 100)
 }
 
 function onPointerDown(event: PointerEvent) {
@@ -70,21 +70,21 @@ function onPointerMove(event: PointerEvent) {
 
 function onHandleKeydown(event: KeyboardEvent) {
   const step = event.shiftKey ? 10 : 1
-  if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
-    event.preventDefault()
-    btcPercent.value = clamp(btcPercent.value - step)
-  }
-  if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+  if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
     event.preventDefault()
     btcPercent.value = clamp(btcPercent.value + step)
   }
+  if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+    event.preventDefault()
+    btcPercent.value = clamp(btcPercent.value - step)
+  }
   if (event.key === 'Home') {
     event.preventDefault()
-    btcPercent.value = 0
+    btcPercent.value = 100
   }
   if (event.key === 'End') {
     event.preventDefault()
-    btcPercent.value = 100
+    btcPercent.value = 0
   }
 }
 
@@ -191,7 +191,7 @@ function onEthFieldInput(event: Event) {
           :aria-valuenow="Math.round(btcPercent)"
           :aria-valuetext="`${Math.round(btcPercent)} percent BTC, ${ethPercent} percent ETH`"
           class="border-card bg-forest focus-visible:outline-forest absolute top-1/2 flex h-7 w-3.5 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-0.5 rounded-full border-2 shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-          :style="{ left: `${btcPercent}%` }"
+          :style="{ left: `${ethPercent}%` }"
           @keydown="onHandleKeydown"
         >
           <span class="bg-card/80 h-2.5 w-px rounded-full" />

@@ -25,6 +25,17 @@ describe('SplitControl', () => {
     expect(values[1]).toBe('60')
   })
 
+  it('parks the grip on the side that is maxed', async () => {
+    const wrapper = mount(SplitControl, {
+      props: { modelValue: 100 },
+    })
+    const grip = wrapper.get('[role="slider"]')
+    expect(grip.attributes('style')).toContain('left: 0%')
+
+    await wrapper.setProps({ modelValue: 0 })
+    expect(wrapper.get('[role="slider"]').attributes('style')).toContain('left: 100%')
+  })
+
   it('strips letters from a percent field', async () => {
     const wrapper = mount(SplitControl, {
       props: {

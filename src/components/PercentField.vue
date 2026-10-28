@@ -22,7 +22,7 @@ const emit = defineEmits<{
     :for="inputId"
     :class="[
       fieldClass,
-      'input-shell inline-flex min-w-16 cursor-text items-baseline justify-center gap-0.5 px-3 py-2',
+      'input-shell inline-flex cursor-text items-baseline justify-center gap-0.5 px-3 py-2',
     ]"
   >
     <input
@@ -39,7 +39,7 @@ const emit = defineEmits<{
       aria-valuemax="100"
       :aria-valuenow="now"
       :aria-valuetext="valuetext"
-      class="figure-split text-ink focus-visible:outline-forest w-auto min-w-[1ch] bg-transparent p-0 font-semibold tabular-nums outline-none [field-sizing:content] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2"
+      class="figure-split text-ink focus-visible:outline-forest w-[3ch] bg-transparent p-0 text-end font-semibold tabular-nums outline-none focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2"
       @beforeinput="emit('beforeinput', $event)"
       @keydown="emit('keydown', $event)"
       @focus="emit('focus')"
